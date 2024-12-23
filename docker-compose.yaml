@@ -1,0 +1,90 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14.3
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./db/postgres:/var/lib/postgresql/data
+      - ./db/init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
+    ports:
+      - 5432:5432
+  customers-graphql:
+    image: mlpaucara/customers-graphql-sg:1.0.7
+    platform: linux/amd64
+    build:
+      context: ./customers-graphql
+      dockerfile: ./src/main/docker/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/customers_db?schema=customers_schema
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      postgres:
+        condition: service_started
+  accounts:
+    image: mlpaucara/accounts-sg:1.0.3
+    platform: linux/amd64
+    build:
+      context: ./accounts
+      dockerfile: ./src/main/docker/Dockerfile
+    environment:
+      - DB_URL=r2dbc:postgresql://postgres:5432/customers_db?schema=accounts_schema
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    ports:
+      - "9061:9061"
+    depends_on:
+      postgres:
+        condition: service_started
+  accounts-graphql:
+    image: mlpaucara/accounts-graphql-sg:1.0.3
+    platform: linux/amd64
+    build:
+      context: ./accounts-graphql
+      dockerfile: ./src/main/docker/Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - MSACCOUNTS_URL=http://accounts:9061/
+  risks:
+    image: mlpaucara/risks-sg:1.0.3
+    platform: linux/amd64
+    build:
+      context: ./risks
+      dockerfile: ./src/main/docker/Dockerfile
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/customers_db?currentSchema=risk_schema
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    ports:
+      - "9062:8585"
+    depends_on:
+      postgres:
+        condition: service_started
+  risks-graphql:
+    image: mlpaucara/risks-graphql-sg:1.0.2
+    platform: linux/amd64
+    build:
+      context: ./risks-graphql
+      dockerfile: ./src/main/docker/Dockerfile
+    ports:
+      - "8082:8080"
+    environment:
+      - MSRISKS_URL=http://risks:8585/
+      - MSRISKS_ADDRESS=risks:8585
+    depends_on:
+      risks:
+        condition: service_started
+  apollo-router:
+    image: ghcr.io/apollographql/router:v1.57.0
+    platform: linux/amd64
+    environment:
+      - APOLLO_GRAPH_REF=demo-federation-entities@current
+      - APOLLO_KEY=service:demo-federation-entities:XAwl6WpKmdyJ7CuGNak0SA
+    ports:
+      - 4000:4000
+    volumes:
+      - ./router-graphql/router.yaml:/dist/config/router.yaml
