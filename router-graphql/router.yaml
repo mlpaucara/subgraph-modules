@@ -1,0 +1,35 @@
+supergraph:
+  # The socket address and port to listen on
+  listen: 0.0.0.0:4000
+include_subgraph_errors:
+  all: true # Propagate errors from all subgraphs
+headers:
+  all:
+    request:
+      - propagate:
+          named: "Authorization"
+cors:
+  origins:
+    - https://studio.apollographql.com # Allows Studio to still run queries against your Router
+authorization:
+  require_authentication: false
+authentication:
+  router:
+    jwt:
+      jwks: # This key is required.
+        - url: https://dev-xmjz5izp3g5l3s6y.us.auth0.com/.well-known/jwks.json
+          issuer: https://dev-xmjz5izp3g5l3s6y.us.auth0.com/
+          poll_interval: 300s
+      # These keys are optional. Default values are shown.
+      header_name: Authorization
+      header_value_prefix: Bearer
+persisted_queries:
+  enabled: true # Allow operation IDs.
+                # This mode lets clients execute operations by providing their PQL-specified ID instead of the full operation string.
+                # Your router also continues to accept full operation strings, even for operations that don't appear in its PQL.
+  log_unknown: true # Turning on logging is crucial for safelisting. The logs identify which operations you need to either add to your PQL or stop your client apps from making.
+  safelist:
+    enabled: false # Solo permite operaciones registrada en la PQL (por query o por id)
+    require_id: false # Solo permite consultar por ID (hash)
+apq:
+  enabled: false # APQ must be turned off
