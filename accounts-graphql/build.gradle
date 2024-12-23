@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.netflix.dgs.codegen' version '6.0.3'
+}
+
+group 'com.mlpaucara'
+version '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+
+    implementation (platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies"))
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter'
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-extended-scalars'
+
+
+    implementation 'net.datafaker:datafaker:2.0.2'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+
+
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    implementation'com.neovisionaries:nv-i18n:1.23'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+generateJava {
+    packageName = 'com.mlpaucara.codegen'
+    generateClient = false
+    typeMapping = [
+            "Date"              : "java.time.LocalDate",
+            "NonNegativeInt"    : "java.lang.Integer",
+            "Url"               : "java.net.URL",
+            "DateTime"          : "java.time.OffsetDateTime"
+    ]
+}
