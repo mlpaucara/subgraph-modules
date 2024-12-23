@@ -1,0 +1,22 @@
+
+
+spring:
+  main:
+    banner-mode: OFF
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://csonicdevdb01.postgres.database.azure.com:5432/customers_db?currentSchema=risk_schema}
+    username: ${DB_USER:postgress}
+    password: ${DB_PASSWORD:postgress}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+
+
+grpc:
+  server:
+    port: 8585
+
+server:
+  port: 8080

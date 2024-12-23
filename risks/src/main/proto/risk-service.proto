@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+
+option java_multiple_files = true;
+option java_package = "com.mlpaucara.grpc.server";
+
+message EvaluationRequest{
+  string customer_id = 1;
+}
+
+message EvaluationResponse {
+  string id = 1;
+  string customer_id = 2;
+  string moodys = 3;
+  string pcr = 4;
+  string sbs = 5;
+}
+
+service RiskService {
+  rpc getEvaluation(EvaluationRequest) returns (EvaluationResponse);
+}
