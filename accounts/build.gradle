@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group 'com.mlpaucara'
+version '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //implementation 'net.datafaker:datafaker:2.0.2'
+    //implementation 'org.apache.commons:commons-lang3:3.14.0'
+    //implementation 'org.ocpsoft.prettytime:prettytime:5.0.6.Final'
+
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.postgresql:r2dbc-postgresql:1.0.3.RELEASE'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    //testImplementation 'io.projectreactor:reactor-test'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+}
+
+test {
+    useJUnitPlatform()
+}
