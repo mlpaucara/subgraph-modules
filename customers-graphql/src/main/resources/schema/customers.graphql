@@ -1,0 +1,61 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.7",
+    import: ["@key","@shareable"])
+
+scalar Url
+scalar Date
+scalar NonNegativeInt
+scalar DateTime
+
+
+type Phone{
+    id: ID
+    phone: String!
+    createDateTime: DateTime!
+}
+
+enum TypesDocument {
+    DNI
+    PASSPORT
+}
+
+enum TypesGender {
+    Female
+    Male
+}
+
+type DocumentType {
+    type: TypesDocument!
+    number: String!
+}
+
+type Customer @key(fields: "id") {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    gender: TypesGender!
+    address: String!
+    birthDate: DateTime!
+    document: DocumentType!
+    email: String!
+    createDateTime: DateTime!
+    phones:[Phone!]
+    relations:[Customer]
+}
+
+
+type Query{
+    customerSearch(filter:CustomerSearchFilter):[Customer!]
+    customer(filter:CustomerFilter!):Customer
+}
+
+input CustomerFilter {
+    type: TypesDocument
+    number: String
+    id: ID
+}
+
+input CustomerSearchFilter {
+    firstName: String
+    lastName: String
+}

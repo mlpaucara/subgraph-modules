@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.netflix.dgs.codegen' version '6.0.2'
+}
+
+group 'com.mlpaucara'
+version '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-webflux-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    //delete 8.4.0 for development purposes && add 8.4.0 for deployment
+    implementation (platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:8.4.0"))
+
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter'
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-extended-scalars'
+    implementation group: 'com.netflix.graphql.dgs', name: 'graphql-dgs-spring-boot-micrometer'
+
+    implementation 'net.datafaker:datafaker:2.0.2'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    implementation 'org.ocpsoft.prettytime:prettytime:5.0.6.Final'
+    runtimeOnly 'org.postgresql:postgresql'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+generateJava {
+    packageName = 'com.mlpaucara.codegen'
+    generateClient = false
+    typeMapping = [
+            "Date"              : "java.time.LocalDate",
+            "NonNegativeInt"    : "java.lang.Integer",
+            "Url"               : "java.net.URL",
+            "DateTime"          : "java.time.OffsetDateTime"
+    ]
+}

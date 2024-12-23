@@ -1,0 +1,29 @@
+
+microservices.customers:
+  url: ${MSCUSTOMERS_URL:http://localhost:9060/}
+
+
+dgs:
+  graphql:
+    virtualthreads.enabled: true
+    schema-location:
+      - "classpath*:schema/**/*.graphql*"
+      - "classpath*:schema/**/*.gql"
+
+logging:
+  pattern:
+    console: "%clr(%d{HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr(---){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+  level.org.springframework.jdbc.core: ERROR
+
+spring:
+  threads.virtual.enabled: true
+  main:
+    banner-mode: OFF
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://postgres:5432/customers_db?schema=customers_schema&pool=true&maxPoolSize=10}
+    username: ${DB_USER:user}
+    password: ${DB_PASSWORD:pwd}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
