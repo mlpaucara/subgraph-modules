@@ -1,0 +1,18 @@
+
+
+microservices.risks:
+  url: ${MSRISKS_URL:http://localhost:9062/}
+
+grpc:
+  client:
+    local-grpc-server:
+      address: 'risks:8585'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+dgs:
+  graphql:
+    schema-location:
+      - "classpath*:schema/**/*.graphql*"
+      - "classpath*:schema/**/*.gql"

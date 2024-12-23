@@ -1,0 +1,28 @@
+extend schema
+@link(url: "https://specs.apollo.dev/federation/v2.7",
+    import: ["@key"])
+
+"""Evaluación del cliente"""
+type Evaluation {
+    "Id de la evaluación"
+    id: ID
+    "Id del cliente"
+    customerId: ID
+    "Clasificación Moodys"
+    moodys: String!
+    "Clasificación SBS"
+    sbs: String!
+    "Clasificación PCR"
+    pcr: String!
+}
+
+type Customer @key(fields: "id") {
+    "Id del Cliente"
+    id: ID
+    "Evaluación del cliente"
+    evaluation: Evaluation!
+}
+
+type Query{
+    evaluation(customerID:ID!):Evaluation
+}
